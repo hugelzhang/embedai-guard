@@ -129,7 +129,8 @@ def format_junit(result: ScanResult) -> str:
 # ── 主命令 ──────────────────────────────────
 
 def scan_command(path: str, rules_dir: str, fmt: str = 'terminal',
-                 exclude: List[str] = None) -> int:
+                 exclude: List[str] = None,
+                 save: str = None, diff: str = None) -> int:
     """扫描目录或文件"""
     # 加载规则
     rules = load_all_rules(rules_dir)
@@ -158,6 +159,19 @@ def scan_command(path: str, rules_dir: str, fmt: str = 'terminal',
     else:
         print(f"ERROR: {path} is not a valid file or directory", file=sys.stderr)
         return 1
+
+    # 保存基线
+    if save:
+        with open(save, 'w', encoding='utf-8') as f:
+            f.write(format_json(result))
+        print(f"Baseline saved: {save} ({len(result.violations)} violations)",
+              file=sys.stderr)
+        return 0
+
+    # 与基线对比
+    if diff:
+        print(format_delta(result, diff))
+        return 0
 
     # 输出
     if fmt == 'json':
@@ -355,6 +369,72 @@ def execute_command(path: str) -> int:
     return 0 if all_ok else 1
 
 
+def format_delta(result: ScanResult, baseline_path: str) -> str:
+    """对比当前扫描与基线的差异"""
+    import json as _json
+
+    try:
+        with open(baseline_path, 'r', encoding='utf-8') as f:
+            baseline = _json.load(f)
+    except Exception as e:
+        return f"{_RED}Failed to load baseline: {e}{_RESET}"
+
+    # 用 (file, rule_id, line) 做 key
+    old_violations = baseline.get('violations', [])
+    old_keys = set()
+    for v in old_violations:
+        old_keys.add((v['file'], v['rule_id'], v['line']))
+
+    new_keys = set()
+    for v in result.violations:
+        new_keys.add((v.file, v.rule_id, v.line))
+
+    fixed = old_keys - new_keys
+    added = new_keys - old_keys
+    unchanged = old_keys & new_keys
+
+    lines = [f"{_BOLD}{_CYAN}EmbedAI Guard — Delta Report{_RESET}",
+             f"  Baseline: {baseline_path} "
+             f"({len(old_violations)} violations)",
+             f"  Current:  {len(result.violations)} violations",
+             ""]
+
+    if added:
+        lines.append(f"  {_RED}{_BOLD}+ {len(added)} NEW{_RESET}")
+        for f, rid, ln in sorted(added)[:10]:
+            fname = os.path.basename(f)
+            lines.append(f"    {_RED}+ {fname}:{ln} [{rid}]{_RESET}")
+        if len(added) > 10:
+            lines.append(f"    {_DIM}... and {len(added)-10} more{_RESET}")
+
+    if fixed:
+        lines.append(f"\n  {_GREEN}{_BOLD}- {len(fixed)} FIXED{_RESET}")
+        for f, rid, ln in sorted(fixed)[:10]:
+            fname = os.path.basename(f)
+            lines.append(f"    {_GREEN}- {fname}:{ln} [{rid}]{_RESET}")
+        if len(fixed) > 10:
+            lines.append(f"    {_DIM}... and {len(fixed)-10} more{_RESET}")
+
+    if unchanged:
+        lines.append(f"\n  {_DIM}  {len(unchanged)} unchanged{_RESET}")
+
+    lines.append("")
+    if not added and not fixed:
+        lines.append(f"  {_GREEN}{_BOLD}✓ No changes — quality stable{_RESET}")
+    elif added and not fixed:
+        lines.append(f"  {_RED}{_BOLD}⚠ +{len(added)} new violations — quality degraded{_RESET}")
+    elif fixed and not added:
+        lines.append(f"  {_GREEN}{_BOLD}▼ -{len(fixed)} violations fixed — quality improved{_RESET}")
+    else:
+        net = len(fixed) - len(added)
+        sign = '+' if net > 0 else ''
+        color = _GREEN if net >= 0 else _RED
+        lines.append(f"  {color}{_BOLD}Net: {sign}{net} "
+                     f"({len(fixed)} fixed, {len(added)} new){_RESET}")
+
+    return '\n'.join(lines)
+
+
 def check_command(path: str, contract_path: str) -> int:
     """芯片契约验证：引脚冲突 / AF 号 / DMA 通道"""
     import glob as _glob
@@ -516,6 +596,10 @@ Examples:
 
     scan.add_argument('--format', choices=['terminal', 'json', 'junit'],
                       default='terminal', help='输出格式 (默认: terminal)')
+    scan.add_argument('--save', default=None,
+                      help='保存基线到 JSON 文件')
+    scan.add_argument('--diff', default=None,
+                      help='与基线 JSON 文件对比差异')
 
     # guard rules
     rules_cmd = sub.add_parser('rules', help='列出所有规则')
@@ -538,7 +622,9 @@ Examples:
             args.exclude = ['HALLIB', 'CORE', 'OBJ',
                            'stm32l4*', 'core_cm*', 'cmsis_*',
                            'system_stm32*', 'stm32_assert*']
-        return scan_command(args.path, rules_dir, args.format, args.exclude)
+        return scan_command(args.path, rules_dir, args.format, args.exclude,
+                           getattr(args, 'save', None),
+                           getattr(args, 'diff', None))
     elif args.command == 'fix':
         if args.exclude is None:
             args.exclude = ['HALLIB', 'CORE', 'OBJ',
