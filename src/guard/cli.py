@@ -286,6 +286,75 @@ def plan_command(path: str) -> int:
     return 0
 
 
+def execute_command(path: str) -> int:
+    """一键执行完整计划：plan → scan → fix → check"""
+    from .engines.planner import Planner
+    from .contract import ContractViolation
+
+    print(f"{_BOLD}{_CYAN}EmbedAI Guard — Full Execution{_RESET}\n")
+
+    planner = Planner()
+    plan, results = planner.execute(path)
+
+    # ── Scan 结果 ──
+    store = results.get('scan')
+    if store:
+        print(store.format('terminal'))
+
+    # ── Fix 结果 ──
+    fix_result = results.get('fix')
+    if fix_result and fix_result.fixes:
+        print(f"\n{_BOLD}{_CYAN}[Fix] Auto-fix applied:{_RESET} "
+              f"{fix_result.applied_count} changes")
+        for f in fix_result.fixes[:5]:
+            fname = os.path.basename(f.file_path)
+            print(f"  {_GREEN}{fname}:{f.line}{_RESET}  "
+                  f"{f.old_text.strip()[:50]} {_DIM}→{_RESET} "
+                  f"{f.new_text.strip()[:50]}")
+
+    # ── Check 结果 ──
+    violations = results.get('check', [])
+    pins = results.get('check_pins', [])
+    if pins:
+        print(f"\n{_BOLD}{_CYAN}[Check] Chip: {plan.chip_detected}{_RESET}")
+        print(f"  Pins assigned: {len(pins)}")
+        by_pin = {}
+        for a in pins:
+            by_pin.setdefault(a.pin_name, []).append(a)
+        for pn in sorted(by_pin.keys())[:10]:
+            funcs = set(a.function for a in by_pin[pn])
+            print(f"  {pn:5s} → {', '.join(funcs)}")
+        if len(by_pin) > 10:
+            print(f"  ... and {len(by_pin)-10} more")
+
+    if violations:
+        errors = [v for v in violations if v.severity == 'error']
+        warns = [v for v in violations if v.severity == 'warning']
+        print(f"\n  {_RED}Contract: {len(errors)} errors{_RESET}, "
+              f"{_YELLOW}{len(warns)} warnings{_RESET}")
+        for v in violations[:5]:
+            c = _RED if v.severity == 'error' else _YELLOW
+            print(f"    {c}[{v.severity.upper()}]{_RESET} {v.message}")
+    elif pins:
+        print(f"  {_GREEN}✓ No contract violations{_RESET}")
+
+    # ── 总结 ──
+    scan_ok = store.passed if store else True
+    check_errs = sum(1 for v in (violations or []) if v.severity == 'error')
+    all_ok = scan_ok and check_errs == 0
+
+    print(f"\n{'═' * 50}")
+    if all_ok:
+        print(f"{_GREEN}{_BOLD}  ALL CHECKS PASSED{_RESET}")
+    else:
+        print(f"{_RED}{_BOLD}  ISSUES FOUND{_RESET}"
+              f"  |  scan: {'PASS' if scan_ok else 'FAIL'}"
+              f"  |  contract: {check_errs} errors")
+    print(f"{'═' * 50}")
+
+    return 0 if all_ok else 1
+
+
 def check_command(path: str, contract_path: str) -> int:
     """芯片契约验证：引脚冲突 / AF 号 / DMA 通道"""
     import glob as _glob
@@ -442,6 +511,8 @@ Examples:
     plan = sub.add_parser('plan', help='项目分析 + 推荐执行计划')
     plan.add_argument('path', nargs='?', default='.',
                       help='项目路径 (默认: 当前目录)')
+    plan.add_argument('--execute', action='store_true',
+                      help='自动执行推荐计划 (scan → fix → check)')
 
     scan.add_argument('--format', choices=['terminal', 'json', 'junit'],
                       default='terminal', help='输出格式 (默认: terminal)')
@@ -478,6 +549,8 @@ Examples:
     elif args.command == 'check':
         return check_command(args.path, os.path.abspath(args.contract))
     elif args.command == 'plan':
+        if args.execute:
+            return execute_command(args.path)
         return plan_command(args.path)
     elif args.command == 'rules':
         return list_rules_command(rules_dir)

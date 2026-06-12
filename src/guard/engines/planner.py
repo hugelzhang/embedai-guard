@@ -118,7 +118,7 @@ class Planner:
 
     def __init__(self, rules_dir: str = None, plugin_dir: str = None):
         if rules_dir is None:
-            rules_dir = os.path.join(os.path.dirname(__file__), '..', 'rules')
+            rules_dir = os.path.join(os.path.dirname(__file__), '..', '..', 'rules')
         if plugin_dir is None:
             plugin_dir = os.path.join(os.path.dirname(__file__), '..', '..', 'plugins')
         self.rules_dir = rules_dir
@@ -197,6 +197,67 @@ class Planner:
                if any(k in f.lower() for k in ['main', 'conf', 'init', 'system'])]
         rest = [f for f in files if f not in key]
         return (key + rest)[:20]
+
+    def execute(self, project_path: str) -> Tuple['Plan', dict]:
+        """执行完整计划：scan → fix → check，返回 (plan, results)"""
+        plan = self.analyze(project_path)
+        results = {}
+
+        from ..scanner import Scanner
+        from ..loader import load_all_rules
+        from ..fixer import generate_fixes, apply_fixes, format_diff, FixResult
+        from ..contract import (ChipContract, extract_pin_assignments,
+                                validate_assignments, validate_clocks,
+                                validate_dma, validate_interrupts)
+        from ..skills.report import ReportStore
+
+        fs = ProjectFS(project_path)
+        rules = load_all_rules(self.rules_dir)
+
+        # ── Step 1: Scan ──
+        scanner = Scanner(rules, self._parser)
+        store = ReportStore()
+        for fp, source in fs.iter_files():
+            violations = scanner.scan_file(fp)
+            store.add(violations)
+        results['scan'] = store
+
+        # ── Step 2: Fix ──
+        if store.violations:
+            fixable_ids = {r.id for r in rules if r.auto_fix}
+            fixable = [v for v in store.violations if v.rule_id in fixable_ids]
+            if fixable:
+                source_by_file = {}
+                for fp in fs.find_files():
+                    src = fs.read(fp)
+                    if src:
+                        source_by_file[fp] = src
+                fix_result = generate_fixes(fixable, source_by_file)
+                # 自动应用修复
+                apply_fixes(fix_result.fixes, source_by_file, dry_run=False)
+                results['fix'] = fix_result
+
+        # ── Step 3: Check ──
+        if plan.recommended_contract:
+            contract = ChipContract.from_file(plan.recommended_contract)
+            all_assignments = []
+            all_violations = []
+            src_files = [f for f in fs.find_files() if f.endswith('.c')]
+            for fp in src_files:
+                src = fs.read(fp)
+                if src:
+                    assigns = extract_pin_assignments(src, fp, self._parser)
+                    all_assignments.extend(assigns)
+                    all_violations += validate_clocks(src, fp, contract, self._parser)
+                    all_violations += validate_dma(src, fp, contract, self._parser)
+                    all_violations += validate_interrupts(src, fp, contract, self._parser)
+            if all_assignments:
+                cr = validate_assignments(all_assignments, contract)
+                all_violations += cr.violations
+                results['check_pins'] = all_assignments
+            results['check'] = all_violations
+
+        return plan, results
 
     def _estimate(self, fs: ProjectFS, sample_files: List[str]
                   ) -> Tuple[int, int, int]:
