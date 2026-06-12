@@ -1,0 +1,30 @@
+[1m[96mEmbedAI Guard — Scan Results[0m
+  Files: 42 scanned
+  [91mERROR: 8[0m  [93mWARNING: 204[0m  INFO: 0
+
+  [1madc.c[0m  (13 issue(s))
+    [91mERROR  [0m L 126:9    [EMBED-001]  发现阻塞延时调用 `delay_ms(`
+            [2m> delay_ms(5);[0m
+    [93mWARNING[0m L 129:12   [EMBED-003]  表达式 `temp_val / times` 使用了 '/' 运算符
+            [2m> return temp_val / times;[0m
+    [93mWARNING[0m L  57:1    [EMBED-006]  HAL 函数返回值未被检查 `    HAL_ADC_Init(`
+            [2m> HAL_ADC_Init(&ADC1_Handler);                                 //��ʼ��[0m
+    [93mWARNING[0m L  74:1    [EMBED-006]  HAL 函数返回值未被检查 `    HAL_RCCEx_PeriphCLKConfig(`
+            [2m> HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit);[0m
+    [93mWARNING[0m L  82:1    [EMBED-006]  HAL 函数返回值未被检查 `    HAL_GPIO_Init(`
+            [2m> HAL_GPIO_Init(GPIOC, &GPIO_Initure);[0m
+    [93mWARNING[0m L 101:1    [EMBED-006]  HAL 函数返回值未被检查 `    HAL_ADC_ConfigChannel(`
+            [2m> HAL_ADC_ConfigChannel(&ADC1_Handler, &ADC1_ChanConf);       //ͨ������[0m
+    [93mWARNING[0m L 102:1    [EMBED-006]  HAL 函数返回值未被检查 `
+    HAL_ADC_Start(`
+    [93mWARNING[0m L 104:1    [EMBED-006]  HAL 函数返回值未被检查 `
+    HAL_ADC_PollForConversion(`
+    [93mWARNING[0m L  27:1    [EMBED-007]  全局变量未声明 volatile: `ADC_HandleTypeDef ADC1_Handler;`
+            [2m> ADC_HandleTypeDef ADC1_Handler;//ADC���[0m
+    [93mWARNING[0m L  72:5    [EMBED-010]  变量 `PeriphClkInit` （声明于 L68）使用前未初始化
+            [2m> PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_ADC;[0m
+    [93mWARNING[0m L  79:5    [EMBED-010]  变量 `GPIO_Initure` （声明于 L69）使用前未初始化
+            [2m> GPIO_Initure.Pin = GPIO_PIN_2;          //PC2[0m
+    [93mWARNING[0m L  95:5    [EMBED-010]  变量 `ADC1_ChanConf` （声明于 L93）使用前未初始化
+            [2m> ADC1_ChanConf.Channel = ch;                                 //ͨ��[0m
+    [93mWARNING[0m L 123:27   [EMBED-011]  小类型变量 `t` 的自增/自减可能导致溢出（无边界检查）

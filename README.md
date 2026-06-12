@@ -4,7 +4,7 @@
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue)](https://python.org)
-[![Tests](https://img.shields.io/badge/tests-43%20passed-green)](tests/)
+[![CI](https://github.com/hugelzhang/embedai-guard/actions/workflows/test.yml/badge.svg)](https://github.com/hugelzhang/embedai-guard/actions)
 [![Chips](https://img.shields.io/badge/chips-3%20supported-cyan)](src/plugins/)
 
 ---
@@ -43,6 +43,26 @@ guard scan .                          # 13 条规则约束扫描
 guard fix . --dry-run                 # 预览可自动修复的违规
 guard fix . --apply                   # 执行自动修复
 guard check . --contract chip.json    # 芯片契约验证
+```
+
+### 效果预览
+
+```
+$ guard scan STM32L475_HARDWARE/
+
+EmbedAI Guard — Scan Results
+  ERROR: 8  WARNING: 204  INFO: 0
+
+  adc.c (13 issues)
+    ERROR  L 126:9   [EMBED-001]  发现阻塞延时调用 delay_ms(
+            > delay_ms(5);
+    ERROR  L  30:1   [EMBED-004]  ISR USART1_IRQHandler 共 31 行（建议 ≤10 行）
+    WARN   L  27:1   [EMBED-007]  全局变量未声明 volatile
+
+  pwm.c (9 issues)        stmflash.c (16 issues)     timer.c (5 issues)
+  ...                     ...                        ...
+
+  ✗ 8 errors — FIX REQUIRED
 ```
 
 ## 项目状态
