@@ -333,6 +333,10 @@ class Scanner:
         # identifier 是 declaration 的直接子节点
         uninit_vars = {}
         for decl in self._iter_nodes(body, 'declaration'):
+            # 跳过 static 变量（C 标准保证零初始化）
+            decl_text = decl.text.decode('utf-8', errors='replace')
+            if 'static' in decl_text:
+                continue
             has_init_declarator = any(c.type == 'init_declarator' for c in decl.children)
             if has_init_declarator:
                 # 有 init_declarator → 检查是否有初始值
