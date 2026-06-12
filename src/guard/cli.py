@@ -587,6 +587,15 @@ Examples:
     check.add_argument('--contract', required=True,
                        help='芯片契约 JSON 文件路径')
 
+    # guard trace
+    trace = sub.add_parser('trace', help='Golden Trace 波形对比')
+    trace_sub = trace.add_subparsers(dest='trace_cmd')
+    trace_cmp = trace_sub.add_parser('compare', help='对比两个波形 CSV')
+    trace_cmp.add_argument('golden', help='黄金基线 CSV 文件')
+    trace_cmp.add_argument('current', help='当前采集 CSV 文件')
+    trace_cmp.add_argument('--tolerance', type=float, default=1e-6,
+                           help='时序容忍度 (秒, 默认 1us)')
+
     # guard plan
     plan = sub.add_parser('plan', help='项目分析 + 推荐执行计划')
     plan.add_argument('path', nargs='?', default='.',
@@ -638,6 +647,11 @@ Examples:
         if args.execute:
             return execute_command(args.path)
         return plan_command(args.path)
+    elif args.command == 'trace':
+        from .skills.trace import compare_traces, format_trace_report
+        result = compare_traces(args.golden, args.current, args.tolerance)
+        print(format_trace_report(result))
+        return 0 if result.passed else 1
     elif args.command == 'rules':
         return list_rules_command(rules_dir)
 
