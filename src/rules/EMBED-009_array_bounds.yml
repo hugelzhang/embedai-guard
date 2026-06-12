@@ -1,0 +1,13 @@
+id: EMBED-009
+name: "数组访问未做边界检查"
+severity: warning
+category: "内存安全"
+description: "固定大小数组在使用下标访问前，应检查索引值是否在数组范围内。越界访问是栈溢出和内存损坏的主要原因。"
+fix_strategy:
+  type: suggest
+  template: |
+    添加边界检查：
+    if (index >= ARRAY_SIZE) return ERROR;
+    // 或: assert(index < ARRAY_SIZE);
+auto_fix: false
+chip_specific: false

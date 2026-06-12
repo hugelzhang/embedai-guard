@@ -1,0 +1,16 @@
+id: EMBED-003
+name: "禁止乘除运算"
+severity: warning
+category: "禁止乘除"
+description: "避免使用乘除运算符。乘除常量应改用移位操作（如 /2 → >>1, *4 → <<2）。"
+# AST 节点匹配：binary_expression 且 operator 为 * 或 /
+ast_types:
+  - binary_expression
+fix_strategy:
+  type: auto
+  conditions:
+    - divisor_is_power_of_two: "value / N → value >> log2(N)"
+    - multiplier_is_power_of_two: "value * N → value << log2(N)"
+    - otherwise: "warn_only — 如确需乘除，请添加注释说明原因"
+auto_fix: true
+chip_specific: false

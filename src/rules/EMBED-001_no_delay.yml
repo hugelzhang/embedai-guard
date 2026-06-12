@@ -1,0 +1,18 @@
+id: EMBED-001
+name: "禁止阻塞延时"
+severity: error
+category: "非阻塞实现"
+description: "禁止使用 HAL_Delay()、delay_ms()、delay_us() 等阻塞延时函数。应使用定时器驱动或状态机实现非阻塞延时。"
+text_patterns:
+  - 'HAL_Delay\s*\('
+  - '\bdelay_ms\s*\('
+  - '\bdelay_us\s*\('
+  - '\bdelay_init\s*\('
+fix_strategy:
+  type: suggest
+  template: |
+    改为定时器驱动：
+    static uint32_t tick = 0;
+    if (HAL_GetTick() - tick >= MS) { /* ... */ tick = HAL_GetTick(); }
+auto_fix: false
+chip_specific: false

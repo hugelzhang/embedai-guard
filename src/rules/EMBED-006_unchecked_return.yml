@@ -1,0 +1,14 @@
+id: EMBED-006
+name: "未检查返回值"
+severity: warning
+category: "错误处理"
+description: "HAL 库函数、关键系统函数的返回值应当被检查，不应忽略可能的错误状态。检查 return == HAL_OK。"
+text_patterns:
+  - '^\s+HAL_\w+\s*\('
+fix_strategy:
+  type: suggest
+  template: |
+    检查返回值：
+    if (HAL_XXX(...) != HAL_OK) { Error_Handler(); }
+auto_fix: false
+chip_specific: false

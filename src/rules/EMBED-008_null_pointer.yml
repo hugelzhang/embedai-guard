@@ -1,0 +1,15 @@
+id: EMBED-008
+name: "指针参数未做 NULL 检查"
+severity: warning
+category: "内存安全"
+description: "指针类型的函数参数在通过 -> 解引用前，应先检查是否为 NULL。未检查直接解引用是嵌入式固件最常见的崩溃原因之一。"
+# 此规则使用函数级分析（非简单 AST/文本匹配）
+# 分析逻辑见 scanner._check_null_guard()
+fix_strategy:
+  type: suggest
+  template: |
+    在解引用前添加 NULL 检查：
+    if (ptr == NULL) return HAL_ERROR;
+    // 或使用 assert_param(ptr != NULL);
+auto_fix: false
+chip_specific: false

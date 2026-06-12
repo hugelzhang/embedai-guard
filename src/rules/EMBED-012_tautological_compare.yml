@@ -1,0 +1,11 @@
+id: EMBED-012
+name: "无符号数冗余比较"
+severity: warning
+category: "逻辑错误"
+description: "对无符号类型（uint8_t/uint16_t/size_t）进行 >=0、<0 或 ==-1 等比较是无意义的——条件永远为真或永远为假，通常是编程错误。"
+fix_strategy:
+  type: suggest
+  template: |
+    检查类型是否正确：如果变量确实可以为负数，应使用有符号类型（int16_t等）
+auto_fix: false
+chip_specific: false

@@ -1,0 +1,14 @@
+id: EMBED-010
+name: "局部变量使用前未初始化"
+severity: warning
+category: "未定义行为"
+description: "局部变量在声明时未初始化，且在后续表达式中被引用（读取值）时尚未赋值。这导致未定义行为——变量值不确定，可能随机崩溃。"
+# 此规则使用函数级分析（非简单 AST/文本匹配）
+# 分析逻辑见 scanner._check_uninitialized()
+fix_strategy:
+  type: suggest
+  template: |
+    声明时立即初始化：
+    uint8_t var = 0;  // 而非 uint8_t var;
+auto_fix: true
+chip_specific: false

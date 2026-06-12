@@ -1,0 +1,15 @@
+id: EMBED-007
+name: "ISR 共享变量缺少 volatile"
+severity: warning
+category: "中断安全"
+description: "在 ISR 和主循环之间共享的全局变量应声明为 volatile，防止编译器优化导致读取过期值。"
+# AST 节点匹配：declaration（全局变量声明），非 static 非 volatile
+ast_types:
+  - declaration
+fix_strategy:
+  type: suggest
+  template: |
+    添加 volatile 修饰：
+    volatile uint8_t flag = 0;
+auto_fix: false
+chip_specific: false

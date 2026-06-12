@@ -1,0 +1,12 @@
+id: EMBED-015
+name: "switch 语句缺少 default 分支"
+severity: warning
+category: "逻辑完整性"
+description: "switch 语句应包含 default 分支以处理未预期的枚举值或状态。缺少 default 可能导致未处理状态下的未定义行为。"
+fix_strategy:
+  type: suggest
+  template: |
+    添加 default 分支：
+    default: break;  // 或 Error_Handler();
+auto_fix: false
+chip_specific: false

@@ -1,0 +1,16 @@
+id: EMBED-005
+name: "禁止浮点运算"
+severity: warning
+category: "禁止浮点"
+description: "在无 FPU 或 FPU 未启用的 MCU 上，应避免使用 float/double 类型。改用定点整数运算（如 mV、0.1°C 单位）。"
+text_patterns:
+  - '\bfloat\s+\w+'
+  - '\bdouble\s+\w+'
+fix_strategy:
+  type: suggest
+  template: |
+    改为定点整数：
+    float temp = adc * 3.3 / 4096;     // 禁止
+    uint16_t temp_mv = (adc * 3300) >> 12;  // 推荐 (单位: mV)
+auto_fix: false
+chip_specific: true

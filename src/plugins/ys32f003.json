@@ -1,0 +1,88 @@
+{
+  "$schema": "https://embedai.dev/schemas/chip-contract-v1.json",
+  "chip": "YS32F003",
+  "vendor": "汇春 (YSpring)",
+  "package": "TSSOP20",
+  "core": "Cortex-M0",
+  "max_clock_hz": 48000000,
+  "flash_kb": 28,
+  "sram_kb": 3,
+
+  "pins": {
+    "PA0": {"functions": {"GPIO": 0, "TIM1_BKIN": 0, "UART1_TX": 2, "SPI_NSS": 3, "I2C_SCL": 4}, "note": "NRST 复位引脚"},
+    "PA1": {"functions": {"GPIO": 0, "TIM1_CH1N": 0, "UART1_TX": 2, "SPI_SCK": 3, "I2C_SCL": 4}, "adc_channel": 3},
+    "PA2": {"functions": {"GPIO": 0, "TIM1_CH2N": 0, "UART1_RX": 2, "SPI_SCK": 3, "I2C_SDA": 4}, "adc_channel": 4},
+    "PA3": {"functions": {"GPIO": 0, "TIM1_CH3N": 0, "UART1_TX": 2, "SPI_NSS": 3, "I2C_SDA": 4, "MCO": 5}, "adc_channel": 5},
+    "PA4": {"functions": {"GPIO": 0, "TIM1_BKIN": 0, "TIM1_CH3": 1, "UART1_RX": 2, "SPI_NSS": 3, "I2C_SCL": 4}, "adc_channel": 14, "note": "VREF"},
+
+    "PB4": {"functions": {"GPIO": 0, "TIM1_CH2N": 0, "UART1_RX": 2, "SPI_MISO": 3, "I2C_SCL": 4}, "adc_channel": 7},
+    "PB5": {"functions": {"GPIO": 0, "TIM1_BKIN": 0, "UART1_RX": 2, "SPI_NSS": 3, "I2C_SDA": 4}},
+
+    "PC3": {"functions": {"GPIO": 0, "TIM1_CH3": 0, "TIM1_CH1N": 1, "UART1_TX": 2, "SPI_MOSI": 3, "I2C_SCL": 6, "MCO": 7}, "adc_channel": 8},
+    "PC4": {"functions": {"GPIO": 0, "TIM1_CH4": 0, "TIM1_CH2N": 1, "UART1_RX": 2, "SPI_MISO": 3, "I2C_SDA": 6, "MCO": 7}, "adc_channel": 9},
+    "PC5": {"functions": {"GPIO": 0, "TIM1_ETR": 0, "UART1_TX": 2, "SPI_SCK": 3, "I2C_SDA": 4}, "adc_channel": 10},
+    "PC6": {"functions": {"GPIO": 0, "TIM1_CH1": 0, "UART1_RX": 2, "SPI_MOSI": 3, "I2C_SCL": 4}, "adc_channel": 11, "note": "Nucleo板 LED1"},
+    "PC7": {"functions": {"GPIO": 0, "TIM1_CH2": 0, "UART1_RX": 2, "SPI_MISO": 3, "I2C_SCL": 4, "PVD_OUT": 6}, "adc_channel": 12, "note": "Nucleo板 KEY1"},
+
+    "PD1": {"functions": {"GPIO": 0, "TIM1_CH1": 0, "UART1_TX": 2, "SPI_MOSI": 3, "I2C_SDA": 4}, "adc_channel": 13},
+    "PD2": {"functions": {"GPIO": 0, "TIM1_CH2": 0, "UART1_TX": 2, "SPI_MOSI": 3, "I2C_SDA": 4, "SWDIO": 5}, "note": "SWD调试口(SWDIO), 复位后默认"},
+    "PD3": {"functions": {"GPIO": 0, "TIM1_CH3": 0, "UART1_RX": 2, "SPI_SCK": 3, "I2C_SCL": 4, "SWCLK": 5}, "note": "SWD调试口(SWCLK), 复位后默认"},
+    "PD4": {"functions": {"GPIO": 0, "TIM1_CH4": 0, "UART1_TX": 2, "SPI_MOSI": 3, "I2C_SDA": 4, "MCO": 5}, "note": "BOOT0, 默认下拉输入"},
+    "PD5": {"functions": {"GPIO": 0, "TIM1_ETR": 0, "UART1_TX": 2, "SPI_MISO": 3, "I2C_SCL": 4, "MCO": 5}, "adc_channel": 1},
+    "PD6": {"functions": {"GPIO": 0, "TIM1_CH2": 0, "UART1_RX": 2, "SPI_MISO": 3, "I2C_SDA": 4, "MCO": 5, "PVD_OUT": 6}, "adc_channel": 2}
+  },
+
+  "_nucleo_board_notes": {
+    "LED1": {"pin": "PC6", "mode": "推挽输出"},
+    "KEY1": {"pin": "PC7", "mode": "上拉输入"},
+    "UART1": {"TX": "PC3 (AF3)", "RX": "PC2/PA2 (AF2)", "note": "虚拟串口仅TX, RX未连接"},
+    "SWD": {"SWCLK": "PD3", "SWDIO": "PD2"},
+    "SPI1_alt": "PA5(SCK) PA6(MISO) PA7(MOSI) — 仅大封装"
+  },
+
+  "dma": {
+    "_note": "YS32F003 无 DMA 控制器",
+    "channels": {}
+  },
+
+  "interrupts": {
+    "max_priority": 3,
+    "priority_bits": 2,
+    "freertos_max_syscall_priority": 2,
+    "_note": "Cortex-M0 仅 4 级优先级 (0-3), 2 位优先级",
+    "vectors": [
+      "Reset_Handler", "NMI_Handler", "HardFault_Handler",
+      "SVC_Handler", "PendSV_Handler", "SysTick_Handler",
+      "WDT_IWD_IRQHandler", "LPTIM_IRQHandler",
+      "UART1_IRQHandler", "TIM1_IRQHandler",
+      "SPI_IRQHandler", "I2C_IRQHandler",
+      "ADC_IRQHandler", "EXTI0_1_IRQHandler",
+      "EXTI2_3_IRQHandler", "EXTI4_7_IRQHandler"
+    ]
+  },
+
+  "clocks": {
+    "hsi_hz": 48000000,
+    "hse_min_hz": 4000000,
+    "hse_max_hz": 48000000,
+    "lsi_hz": 40000,
+    "pll": {
+      "_note": "YS32F003 无 PLL, 直接使用 HSI (48MHz) 或 HSE"
+    },
+    "bus_max_hz": {
+      "AHB": 48000000,
+      "APB1": 48000000
+    },
+    "flash_latency": [
+      [0, 24000000, 0],
+      [1, 48000000, 1]
+    ]
+  },
+
+  "_known_issues": [
+    "RCC_HSI_16M 未定义: system_ys32f003.c 中常量不存在 (官方SDK bug)",
+    "GPIO_Speed_2MHz: legacy 宏映射到大小写不一致的 GPIO_Speed_Low",
+    "Nucleo 虚拟串口仅 TX: RX 未连接到 ST-LINK",
+    "SDK API 风格: 类STM32标准外设库 (GPIO_Init/UART_Init 等)"
+  ]
+}

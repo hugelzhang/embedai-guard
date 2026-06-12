@@ -1,0 +1,13 @@
+id: EMBED-011
+name: "整数溢出风险"
+severity: warning
+category: "未定义行为"
+description: "对小整数类型（uint8_t/uint16_t）进行递增、加法或乘法操作时可能导致溢出（回绕）。应添加溢出检查或使用更大类型。"
+fix_strategy:
+  type: suggest
+  template: |
+    添加溢出检查：
+    if (x < UINT8_MAX) x++;
+    // 或使用 uint16_t 中间变量
+auto_fix: false
+chip_specific: false

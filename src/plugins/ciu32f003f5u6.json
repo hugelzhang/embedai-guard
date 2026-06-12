@@ -1,0 +1,96 @@
+{
+  "$schema": "https://embedai.dev/schemas/chip-contract-v1.json",
+  "chip": "CIU32F003F5U6",
+  "vendor": "华大电子",
+  "package": "TSSOP20",
+  "core": "Cortex-M0+",
+  "max_clock_hz": 48000000,
+  "flash_kb": 24,
+  "sram_kb": 3,
+
+  "pins": {
+    "PA0": {"functions": {"GPIO": 0, "SPI_MOSI": 1, "I2C_SCL": 2, "UART1_CTS": 3, "TIM3_CH2": 4, "ADC_IN1": null}, "adc_channel": 1},
+    "PA1": {"functions": {"GPIO": 0, "SPI_MISO": 1, "I2C_SDA": 2, "UART1_RTS": 3, "TIM3_CH3": 4, "ADC_IN2": null}, "adc_channel": 2, "note": "板载LED2(低电平点亮)"},
+    "PA2": {"functions": {"GPIO": 0, "SWCLK": 0, "UART1_TX": 1, "SPI_NSS": 2, "TIM3_CH4": 3, "ADC_IN3": null}, "adc_channel": 3, "note": "SWD调试口(SWCLK)"},
+    "PA3": {"functions": {"GPIO": 0, "UART1_TX": 1, "SPI_MOSI": 2, "ADC_IN4": null}, "adc_channel": 4, "note": "KEY1(低有效), UART1 TX"},
+    "PA4": {"functions": {"GPIO": 0, "UART1_RX": 1, "SPI_MISO": 2, "ADC_IN5": null}, "adc_channel": 5, "note": "板载LED4(低电平点亮), UART1 RX"},
+    "PA5": {"functions": {"GPIO": 0, "USART_CK": 1, "TIM3_CH1": 2, "ADC_IN6": null}, "adc_channel": 6, "note": "板载LED3(低电平点亮)"},
+    "PA6": {"functions": {"GPIO": 0, "SPI_NSS": 1, "I2C_SCL": 2, "ADC_IN7": null}, "adc_channel": 7},
+    "PA7": {"functions": {"GPIO": 0, "SPI_MOSI": 1, "I2C_SDA": 2, "ADC_IN8": null}, "adc_channel": 8},
+
+    "PB0": {"functions": {"GPIO": 0, "SPI_SCK": 1, "TIM3_ETR": 2}},
+    "PB1": {"functions": {"GPIO": 0, "USART_RTS": 1, "TIM3_CH1": 2}},
+    "PB2": {"functions": {"GPIO": 0, "SPI_SCK": 1, "TIM3_CH2": 2}},
+    "PB3": {"functions": {"GPIO": 0, "I2C_SCL": 1, "TIM3_CH3": 2}},
+    "PB4": {"functions": {"GPIO": 0, "USART_TX": 1, "TIM3_CH4": 2}},
+    "PB5": {"functions": {"GPIO": 0, "USART_RX": 1}},
+    "PB6": {"functions": {"GPIO": 0, "SWDIO": 0, "I2C_SCL": 1}, "note": "SWD调试口(SWDIO)"},
+    "PB7": {"functions": {"GPIO": 0}, "note": "OSCOUT (晶振输出)"},
+
+    "PC0": {"functions": {"GPIO": 0}, "note": "NRST 复位引脚"},
+    "PC1": {"functions": {"GPIO": 0}, "note": "OSCIN (晶振输入)"}
+  },
+
+  "_board_notes": {
+    "野火核心板_v1.0": {
+      "LED2": {"pin": "PA1", "active": "low", "resistor": "4.7K"},
+      "LED3": {"pin": "PA5", "active": "low", "resistor": "4.7K"},
+      "LED4": {"pin": "PA4", "active": "low", "resistor": "4.7K"},
+      "KEY1": {"pin": "PA3", "active": "low"},
+      "SWD": {"SWCLK": "PA2", "SWDIO": "PB6", "NRST": "PC0"},
+      "warning": "PA3/PA4/PA5 与板载LED/按键共享, 使用需注意冲突"
+    }
+  },
+
+  "dma": {
+    "_note": "CIU32F003 无 DMA 控制器",
+    "channels": {}
+  },
+
+  "interrupts": {
+    "max_priority": 3,
+    "priority_bits": 2,
+    "freertos_max_syscall_priority": 2,
+    "min_priority_for_freertos_isr": 3,
+    "_note": "Cortex-M0+ 仅 4 级优先级 (0-3), FreeRTOS 需 ISR 优先级 > 2",
+    "vectors": [
+      "Reset_Handler", "NMI_Handler", "HardFault_Handler",
+      "SVC_Handler", "PendSV_Handler", "SysTick_Handler",
+      "WDT_IWD_IRQHandler", "LPTIM_IRQHandler",
+      "UART1_IRQHandler", "TIM3_IRQHandler",
+      "FLASH_IRQHandler", "ADC_IRQHandler",
+      "SPI_IRQHandler", "I2C_IRQHandler",
+      "EXTI0_1_IRQHandler", "EXTI2_3_IRQHandler",
+      "EXTI4_7_IRQHandler", "COMP_IRQHandler"
+    ]
+  },
+
+  "clocks": {
+    "hsi_hz": 48000000,
+    "hse_min_hz": 4000000,
+    "hse_max_hz": 32000000,
+    "lsi_hz": 38400,
+    "pll": {
+      "_note": "CIU32F003 无 PLL, 直接使用 HSI (48MHz) 或 HSE",
+      "vco_min_hz": null,
+      "vco_max_hz": null
+    },
+    "bus_max_hz": {
+      "AHB": 48000000,
+      "APB1": 48000000,
+      "APB2": 48000000
+    },
+    "flash_latency": [
+      [0, 24000000, 0],
+      [1, 48000000, 1]
+    ]
+  },
+
+  "_known_issues_from_debug_notes": [
+    "SWD连接: J-Link 抢总线时需拔插电源 (NRST 接线不可靠)",
+    "SysTick: SysTick_Config() 可能不触发, 考虑用主循环累加计数代替",
+    "UART阻塞: TX 超时等待 0xFFFF 次会拖慢主循环, 只发短消息",
+    "LED极性: 板载LED为低电平点亮 (VCC→LED→4.7K→GPIO)",
+    "引脚冲突: PA3(UART TX) 与 KEY1 冲突, PA4(UART RX) 与 LED4 冲突, PA5 与 LED3 冲突"
+  ]
+}

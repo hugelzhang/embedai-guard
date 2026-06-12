@@ -1,0 +1,17 @@
+id: EMBED-002
+name: "禁止动态内存分配"
+severity: error
+category: "静态内存"
+description: "禁止使用 malloc、free、calloc、realloc 等动态内存分配。应使用静态数组或对象池。"
+text_patterns:
+  - '\bmalloc\s*\('
+  - '\bfree\s*\('
+  - '\bcalloc\s*\('
+  - '\brealloc\s*\('
+fix_strategy:
+  type: auto
+  template: |
+    替换为静态分配：
+    static uint8_t buf[SIZE];  // 固定大小静态数组
+auto_fix: false
+chip_specific: false

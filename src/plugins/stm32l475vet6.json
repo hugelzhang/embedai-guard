@@ -1,0 +1,161 @@
+{
+  "$schema": "https://embedai.dev/schemas/chip-contract-v1.json",
+  "chip": "STM32L475VET6",
+  "package": "LQFP100",
+  "core": "Cortex-M4F",
+  "max_clock_hz": 80000000,
+
+  "pins": {
+    "PA0":  {"functions": {"GPIO": 0, "TIM2_CH1": 1, "TIM5_CH1": 2, "USART2_CTS": 7, "ADC1_IN5": null}, "adc_channel": 5, "5v_tolerant": false},
+    "PA1":  {"functions": {"GPIO": 0, "TIM2_CH2": 1, "TIM5_CH2": 2, "USART2_RTS": 7, "ADC1_IN6": null}, "adc_channel": 6, "5v_tolerant": false},
+    "PA2":  {"functions": {"GPIO": 0, "TIM2_CH3": 1, "TIM5_CH3": 2, "USART2_TX": 7, "ADC1_IN7": null}, "adc_channel": 7, "5v_tolerant": false},
+    "PA3":  {"functions": {"GPIO": 0, "TIM2_CH4": 1, "TIM5_CH4": 2, "USART2_RX": 7, "ADC1_IN8": null}, "adc_channel": 8, "5v_tolerant": false},
+    "PA4":  {"functions": {"GPIO": 0, "SPI1_NSS": 5, "USART2_CK": 7, "ADC1_IN9": null, "DAC1_OUT1": null}, "adc_channel": 9, "5v_tolerant": false},
+    "PA5":  {"functions": {"GPIO": 0, "TIM2_CH1": 1, "TIM2_ETR": 2, "SPI1_SCK": 5, "ADC1_IN10": null}, "adc_channel": 10, "5v_tolerant": false},
+    "PA6":  {"functions": {"GPIO": 0, "TIM3_CH1": 2, "SPI1_MISO": 5, "ADC1_IN11": null}, "adc_channel": 11, "5v_tolerant": false},
+    "PA7":  {"functions": {"GPIO": 0, "TIM3_CH2": 2, "SPI1_MOSI": 5, "ADC1_IN12": null}, "adc_channel": 12, "5v_tolerant": false},
+    "PA8":  {"functions": {"GPIO": 0, "MCO": 0, "TIM1_CH1": 1, "USART1_CK": 7}, "5v_tolerant": true},
+    "PA9":  {"functions": {"GPIO": 0, "TIM1_CH2": 1, "USART1_TX": 7}, "5v_tolerant": true},
+    "PA10": {"functions": {"GPIO": 0, "TIM1_CH3": 1, "USART1_RX": 7}, "5v_tolerant": true},
+    "PA11": {"functions": {"GPIO": 0, "TIM1_CH4": 1, "USART1_CTS": 7}, "5v_tolerant": true},
+    "PA12": {"functions": {"GPIO": 0, "TIM1_ETR": 1, "USART1_RTS": 7}, "5v_tolerant": true},
+    "PA13": {"functions": {"GPIO": 0, "SWDIO": 0}, "note": "SWD 调试口", "5v_tolerant": true},
+    "PA14": {"functions": {"GPIO": 0, "SWCLK": 0}, "note": "SWD 调试口", "5v_tolerant": true},
+    "PA15": {"functions": {"GPIO": 0, "TIM2_CH1": 1, "TIM2_ETR": 2, "SPI1_NSS": 5, "USART1_TX": 7}, "note": "JTDI", "5v_tolerant": true},
+
+    "PB0":  {"functions": {"GPIO": 0, "TIM1_CH2N": 1, "TIM3_CH3": 2, "ADC1_IN15": null}, "adc_channel": 15, "5v_tolerant": true},
+    "PB1":  {"functions": {"GPIO": 0, "TIM1_CH3N": 1, "TIM3_CH4": 2, "ADC1_IN16": null}, "adc_channel": 16, "5v_tolerant": true},
+    "PB2":  {"functions": {"GPIO": 0}, "5v_tolerant": true},
+    "PB3":  {"functions": {"GPIO": 0, "TIM2_CH2": 1, "SPI1_SCK": 5, "SPI3_SCK": 6}, "note": "JTDO", "5v_tolerant": true},
+    "PB4":  {"functions": {"GPIO": 0, "TIM3_CH1": 2, "SPI1_MISO": 5, "SPI3_MISO": 6}, "note": "NJTRST", "5v_tolerant": true},
+    "PB5":  {"functions": {"GPIO": 0, "TIM3_CH2": 2, "SPI1_MOSI": 5, "SPI3_MOSI": 6}, "5v_tolerant": true},
+    "PB6":  {"functions": {"GPIO": 0, "TIM4_CH1": 2, "USART1_TX": 7, "I2C1_SCL": 4}, "5v_tolerant": true},
+    "PB7":  {"functions": {"GPIO": 0, "TIM4_CH2": 2, "USART1_RX": 7, "I2C1_SDA": 4}, "5v_tolerant": true},
+    "PB8":  {"functions": {"GPIO": 0, "TIM4_CH3": 2, "I2C1_SCL": 4}, "5v_tolerant": true},
+    "PB9":  {"functions": {"GPIO": 0, "TIM4_CH4": 2, "I2C1_SDA": 4}, "5v_tolerant": true},
+    "PB10": {"functions": {"GPIO": 0, "TIM2_CH3": 1, "USART3_TX": 7, "I2C2_SCL": 4}, "5v_tolerant": true},
+    "PB11": {"functions": {"GPIO": 0, "TIM2_CH4": 1, "USART3_RX": 7, "I2C2_SDA": 4}, "5v_tolerant": true},
+    "PB12": {"functions": {"GPIO": 0, "TIM1_BKIN": 1, "USART3_CK": 7, "I2C2_SMBA": 4}, "5v_tolerant": true},
+    "PB13": {"functions": {"GPIO": 0, "TIM1_CH1N": 1, "USART3_CTS": 7, "I2C2_SCL": 4}, "5v_tolerant": true},
+    "PB14": {"functions": {"GPIO": 0, "TIM1_CH2N": 1, "USART3_RTS": 7, "I2C2_SDA": 4}, "5v_tolerant": true},
+    "PB15": {"functions": {"GPIO": 0, "RTC_REFIN": 0, "TIM1_CH3N": 1, "SPI2_MOSI": 5}, "5v_tolerant": true},
+
+    "PC0":  {"functions": {"GPIO": 0, "ADC1_IN1": null, "ADC2_IN1": null, "ADC3_IN1": null}, "adc_channel": 1, "5v_tolerant": true},
+    "PC1":  {"functions": {"GPIO": 0, "ADC1_IN2": null, "ADC2_IN2": null, "ADC3_IN2": null}, "adc_channel": 2, "5v_tolerant": true},
+    "PC2":  {"functions": {"GPIO": 0, "ADC1_IN3": null, "ADC2_IN3": null, "ADC3_IN3": null}, "adc_channel": 3, "5v_tolerant": true},
+    "PC3":  {"functions": {"GPIO": 0, "ADC1_IN4": null, "ADC2_IN4": null, "ADC3_IN4": null}, "adc_channel": 4, "5v_tolerant": true},
+    "PC4":  {"functions": {"GPIO": 0, "ADC1_IN13": null, "ADC2_IN5": null}, "adc_channel": 13, "5v_tolerant": false},
+    "PC5":  {"functions": {"GPIO": 0, "ADC1_IN14": null, "ADC2_IN6": null}, "adc_channel": 14, "5v_tolerant": false},
+    "PC6":  {"functions": {"GPIO": 0, "TIM3_CH1": 2, "TIM8_CH1": 3}, "5v_tolerant": true},
+    "PC7":  {"functions": {"GPIO": 0, "TIM3_CH2": 2, "TIM8_CH2": 3}, "5v_tolerant": true},
+    "PC8":  {"functions": {"GPIO": 0, "TIM3_CH3": 2, "TIM8_CH3": 3}, "5v_tolerant": true},
+    "PC9":  {"functions": {"GPIO": 0, "TIM3_CH4": 2, "TIM8_CH4": 3}, "5v_tolerant": true},
+    "PC10": {"functions": {"GPIO": 0, "SPI3_SCK": 6, "USART3_TX": 7}, "5v_tolerant": true},
+    "PC11": {"functions": {"GPIO": 0, "SPI3_MISO": 6, "USART3_RX": 7}, "5v_tolerant": true},
+    "PC12": {"functions": {"GPIO": 0, "SPI3_MOSI": 6, "USART3_CK": 7}, "5v_tolerant": true},
+    "PC13": {"functions": {"GPIO": 0}, "note": "RTC_OUT / WKUP2", "5v_tolerant": false},
+    "PC14": {"functions": {"GPIO": 0}, "note": "OSC32_IN", "5v_tolerant": false},
+    "PC15": {"functions": {"GPIO": 0}, "note": "OSC32_OUT", "5v_tolerant": false},
+
+    "PD0":  {"functions": {"GPIO": 0, "SPI2_NSS": 5}, "5v_tolerant": true},
+    "PD1":  {"functions": {"GPIO": 0, "SPI2_SCK": 5}, "5v_tolerant": true},
+    "PD2":  {"functions": {"GPIO": 0, "TIM3_ETR": 2}, "5v_tolerant": true},
+    "PD3":  {"functions": {"GPIO": 0, "SPI2_MISO": 5, "USART2_CTS": 7}, "5v_tolerant": true},
+    "PD4":  {"functions": {"GPIO": 0, "SPI2_MOSI": 5, "USART2_RTS": 7}, "5v_tolerant": true},
+    "PD5":  {"functions": {"GPIO": 0, "USART2_TX": 7}, "5v_tolerant": true},
+    "PD6":  {"functions": {"GPIO": 0, "USART2_RX": 7}, "5v_tolerant": true},
+    "PD7":  {"functions": {"GPIO": 0, "USART2_CK": 7}, "5v_tolerant": true},
+    "PD8":  {"functions": {"GPIO": 0, "USART3_TX": 7}, "5v_tolerant": true},
+    "PD9":  {"functions": {"GPIO": 0, "USART3_RX": 7}, "5v_tolerant": true},
+    "PD10": {"functions": {"GPIO": 0, "USART3_CK": 7}, "5v_tolerant": true},
+    "PD11": {"functions": {"GPIO": 0, "USART3_CTS": 7}, "5v_tolerant": true},
+    "PD12": {"functions": {"GPIO": 0, "TIM4_CH1": 2, "USART3_RTS": 7}, "5v_tolerant": true},
+    "PD13": {"functions": {"GPIO": 0, "TIM4_CH2": 2}, "5v_tolerant": true},
+    "PD14": {"functions": {"GPIO": 0, "TIM4_CH3": 2}, "5v_tolerant": true},
+    "PD15": {"functions": {"GPIO": 0, "TIM4_CH4": 2}, "5v_tolerant": true},
+
+    "PE0":  {"functions": {"GPIO": 0, "TIM4_ETR": 2}, "5v_tolerant": true},
+    "PE1":  {"functions": {"GPIO": 0}, "5v_tolerant": true},
+    "PE2":  {"functions": {"GPIO": 0, "TIM3_CH1": 2, "QSPI_BK1_IO2": 10, "SAI1_MCLK_A": 13}, "5v_tolerant": true},
+    "PE3":  {"functions": {"GPIO": 0, "TIM3_CH2": 2, "QSPI_BK1_IO3": 10, "SAI1_SD_B": 13}, "5v_tolerant": true},
+    "PE4":  {"functions": {"GPIO": 0, "TIM3_CH3": 2, "QSPI_BK1_IO0": 10, "SAI1_FS_A": 13}, "5v_tolerant": true},
+    "PE5":  {"functions": {"GPIO": 0, "TIM3_CH4": 2, "QSPI_BK1_IO1": 10, "SAI1_SCK_A": 13}, "5v_tolerant": true},
+    "PE6":  {"functions": {"GPIO": 0, "TIM1_BKIN2": 1, "QSPI_BK1_IO3": 10, "SAI1_SD_A": 13}, "5v_tolerant": true},
+    "PE7":  {"functions": {"GPIO": 0, "TIM1_ETR": 1, "QSPI_BK2_IO0": 10, "SAI1_SD_B": 13}, "5v_tolerant": true},
+    "PE8":  {"functions": {"GPIO": 0, "TIM1_CH1N": 1, "QSPI_BK2_IO1": 10}, "5v_tolerant": true},
+    "PE9":  {"functions": {"GPIO": 0, "TIM1_CH1": 1, "QSPI_BK2_IO2": 10}, "5v_tolerant": true},
+    "PE10": {"functions": {"GPIO": 0, "TIM1_CH2N": 1, "QSPI_BK2_IO3": 10}, "5v_tolerant": true},
+    "PE11": {"functions": {"GPIO": 0, "TIM1_CH2": 1, "QSPI_BK1_NCS": 10}, "5v_tolerant": true},
+    "PE12": {"functions": {"GPIO": 0, "TIM1_CH3N": 1, "QSPI_BK1_CLK": 10, "SPI1_NSS": 5}, "5v_tolerant": true},
+    "PE13": {"functions": {"GPIO": 0, "TIM1_CH3": 1, "QSPI_BK1_IO0": 10, "SPI1_SCK": 5}, "5v_tolerant": true},
+    "PE14": {"functions": {"GPIO": 0, "TIM1_CH4": 1, "QSPI_BK1_IO1": 10, "SPI1_MISO": 5}, "5v_tolerant": true},
+    "PE15": {"functions": {"GPIO": 0, "TIM1_BKIN": 1, "QSPI_BK1_IO2": 10, "SPI1_MOSI": 5}, "5v_tolerant": true},
+
+    "PF0":  {"functions": {"GPIO": 0, "I2C2_SDA": 4}, "5v_tolerant": true},
+    "PF1":  {"functions": {"GPIO": 0, "I2C2_SCL": 4}, "5v_tolerant": true},
+    "PF4":  {"functions": {"GPIO": 0}, "5v_tolerant": true},
+    "PF5":  {"functions": {"GPIO": 0}, "5v_tolerant": true},
+    "PF10": {"functions": {"GPIO": 0, "QSPI_BK1_IO3": 10, "SAI1_SD_B": 13}, "5v_tolerant": true},
+
+    "PG6":  {"functions": {"GPIO": 0, "QSPI_BK1_NCS": 10}, "5v_tolerant": true},
+    "PG7":  {"functions": {"GPIO": 0, "QSPI_BK1_CLK": 10}, "5v_tolerant": true},
+
+    "PH0":  {"functions": {"GPIO": 0}, "5v_tolerant": true},
+    "PH1":  {"functions": {"GPIO": 0}, "5v_tolerant": true}
+  },
+
+  "dma": {
+    "DMA1": {
+      "Channel1": ["ADC1"],
+      "Channel2": ["SPI1_RX", "USART2_RX"],
+      "Channel3": ["SPI1_TX", "USART2_TX"],
+      "Channel4": ["SPI2_RX", "USART3_RX"],
+      "Channel5": ["SPI2_TX", "USART3_TX"],
+      "Channel6": ["I2C1_TX"],
+      "Channel7": ["I2C1_RX"]
+    },
+    "DMA2": {
+      "Channel1": ["SPI3_RX"],
+      "Channel2": ["SPI3_TX"],
+      "Channel3": ["ADC"],
+      "Channel4": ["QUADSPI"],
+      "Channel5": ["TIM2_CH1", "TIM2_CH3"],
+      "Channel6": ["TIM2_CH2", "TIM2_CH4"],
+      "Channel7": ["TIM3_CH1"]
+    }
+  },
+
+  "interrupts": {
+    "max_priority": 15,
+    "priority_bits": 4,
+    "freertos_max_syscall_priority": 5,
+    "min_priority_for_freertos_isr": 6
+  },
+
+  "clocks": {
+    "hsi_hz": 16000000,
+    "hse_min_hz": 4000000,
+    "hse_max_hz": 48000000,
+    "msi_min_hz": 100000,
+    "msi_max_hz": 48000000,
+    "pll": {
+      "vco_min_hz": 64000000,
+      "vco_max_hz": 344000000,
+      "p_output_max_hz": 80000000,
+      "q_output_max_hz": 80000000,
+      "r_output_max_hz": 80000000
+    },
+    "bus_max_hz": {
+      "AHB": 80000000,
+      "APB1": 80000000,
+      "APB2": 80000000
+    },
+    "flash_latency": [
+      [0,  16000000,  0],
+      [1,  32000000,  1],
+      [2,  48000000,  2],
+      [3,  64000000,  3],
+      [4,  80000000,  4]
+    ]
+  }
+}

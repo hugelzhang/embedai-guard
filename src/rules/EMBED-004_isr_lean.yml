@@ -1,0 +1,16 @@
+id: EMBED-004
+name: "ISR 函数简洁性"
+severity: error
+category: "中断精简"
+description: "中断服务函数 (IRQHandler) 不应超过 10 行。复杂逻辑应放在主循环中处理，ISR 仅设置标志位或操作队列。"
+# AST 节点匹配：function_definition 且函数名包含 IRQHandler
+ast_types:
+  - function_definition
+fix_strategy:
+  type: suggest
+  template: |
+    将 ISR 拆分为两部分：
+    1. ISR 中只做：清除中断标志 + 设置事件标志位
+    2. 主循环中处理实际逻辑
+auto_fix: false
+chip_specific: false
